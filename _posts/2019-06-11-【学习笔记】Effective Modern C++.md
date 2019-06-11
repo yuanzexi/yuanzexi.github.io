@@ -190,7 +190,7 @@ enum Color: std::uint8_t // true, 底层型别是 uint8_t
 C++ 98中为了阻止一些函数被调用，采取的做法是声明其为 `private`，并且不去定义他们。但这种做法无法阻止它们的成员函数，或类的友元去使用它们，这会导致链接阶段因缺少函数定义而宣告失败。另外，当尝试调用某个成员函数时，C++会先教研可访问性，后校验删除状态，这会让调用用户抱怨该函数不可访问。
 C++ 11中，可用 “`= delete`”来阻止函数被使用。此种做法有以下几个优点：
 
- - 任何函数都能成为删除函数，但只有成员函数能声明成`private`。
+- 任何函数都能成为删除函数，但只有成员函数能声明成`private`。
 
 ```c++
 bool isLucky(int number); 
@@ -200,6 +200,7 @@ bool isLucky(bool) = delete; // 拒绝 bool 型别
 bool isLucky(double) = delete; // 拒绝 double 和 float 型别，当 float 面临转型到 int 还是 double 时，C++ 会优先转型到 double。
 ```
 - 删除函数能阻止不应该进行的模板具现。
+
 ```c++
 template <typename T>
 void processPointer(T* ptr);
@@ -233,7 +234,7 @@ public:
 ```
 C++ 11中添加 `override` 声明不仅可以让编译器帮忙检查上述要求，而且也可以让开发者自己明确改写意向。
 
- - `override`仅出现在成员函数声明的末尾时才有关键字意义
+- `override`仅出现在成员函数声明的末尾时才有关键字意义
 
 ----------
 
@@ -264,6 +265,7 @@ int pow(int base, int exp) noexcept
 constexpr auto numCouds = 5;
 std::array<int, pow(3, numConds)> results;
 ```
+
 - `constexpr` 对象都具备`const`属性，并由编译期已知的值完成初始化。
 - `constexpr`函数在调用时，若传入的实参值是编译期已知的，则会产生编译期结果；若传入的实参值有一个或多个是编译期未知的，则它的运作方式与普通函数无异，即在运行期执行结果运算。
 - C++ 11中，`constexpr`函数不得包含多余一个可执行语句，即一条 `return` 语句。C++ 14中，上述限制被放宽了，允许多条语句。
@@ -479,8 +481,6 @@ std::shared_ptr<Widget> spw(new Widget, loggingDel); // 析构器型别不是智
 - 对于`std::shared_ptr`，不建议使用`make`系列函数的额外场景：
     - 自定义内存管理的类
     - 内存紧张的系统、非常大的对象、以及存在比指向相同对象的`std::shared_ptr`生存期更久的`std::weak_ptr`。
-    
-
 ----------
 
 ### 【条款 22】 使用 Pimpl 习惯用法时，将特殊成员函数的定义放到实现文件中
@@ -720,6 +720,7 @@ private:
 ----------
 
 ### 【条款 30】 熟悉完美转发的失败情形
+
 ```c++
 template <typename... Ts>
 void fwd(Ts&&... params){
@@ -757,6 +758,7 @@ void fwd(Ts&&... params){
 
 ### 【条款 32】 使用初始化捕获将对象移入闭包
 - C++ 14中添加了初始化捕获（又名，广义 lambda 捕获），该方式可以在捕获框内使用表达式初始化一个闭包内使用的成员变量。
+
 ```c++
 auto pw = std::make_unique<Widget>();
 auto func = [pw = std::move(pw)]{
@@ -784,6 +786,7 @@ auto func1 = std::bind([](const std::unique_ptr<Widget>& pw){return pw->isValida
 
 ### 【条款 33】 对 auto&& 型别的形参使用 decltype，以 std::forward 之
 - C++ 14中，lambda 可以在形参中使用`auto`，即泛型 lambda 式。若在 lambda 式中需要将参数转发给另一个函数执行。
+
 ```c++
 auto f = [](auto&&... params){
     return func(normalize(std::forward<decltype(params)>(params)...));
@@ -864,6 +867,7 @@ public:
     - 传递的实参型别与容器持有之物的型别不同
     - 容器不会由于存在重复值而拒绝待添加的值
 - 置入函数可能会执行在插入函数中会被拒绝的型别转换
+
 ```c++
 std::vector<std::regex> regexes;
 regexes.push_back(nullptr); // 无法通过编译
