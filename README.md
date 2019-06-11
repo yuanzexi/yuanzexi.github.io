@@ -1,2 +1,2 @@
 1. 学习笔记
-    -  [Flask学习笔记](https://yuanzexi.github.io/notebooks/note_modern_cpp.md)
+    -  [学习笔记](/posts/2019-06-11-Modern Effective C++)
