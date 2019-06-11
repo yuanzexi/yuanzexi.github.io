@@ -1,7 +1,3 @@
-# 【学习笔记】 Effective Modern C++  
-
--------
-
 ## 型别推导
 ----
 
@@ -31,6 +27,7 @@ f(expr)
 ----------
 
 ### 【条款2】 理解 auto 型别推导
+
 ```C++
 const auto& rx = x;
 ```
@@ -42,6 +39,7 @@ const auto& rx = x;
 ----------
 
 ### 【条款3】 理解 decltype
+
 ```
 // C++ 14
 template <typename Container，typename Index>
@@ -92,6 +90,7 @@ auto authAndAccess(Container&& c，Index i)
 ### 【条款6】 当 auto 推导的型别不符合要求时，使用带显式型别的初始化物习惯用法
 - “隐形”的代理型别可以导致`auto`根据初始化表达式推导出“错误的”型别，例如`std::vector<bool>`的`operator[]`返回的是`std::vector<bool>::reference`而不是`bool`。
 - 带显式型别的初始化物习惯用法强制`auto`推导出想要的型别，如：
+
 ```c++
 auto index = static_cast<int>(d * c.size())
 ```
@@ -103,6 +102,7 @@ auto index = static_cast<int>(d * c.size())
 
 ### 【条款 7】 在创建对象时注意区分 () 和 {} 
 - 大括号初始化可以应用的语境最为宽泛，可以阻止隐式窄化型别转换，还对最令人苦恼之解析语法免疫。
+
 ```c++
 double x, y, z;
 int sum1{x + y + z}; // 错误！
@@ -114,6 +114,7 @@ Widget w2(); // 该语句会声明一个名为w2，返回一个Widget型别对�
 ```
 - 在构造函数重载决议期间，只要有任何可能，大括号初始化物就会与带有`std::initializer_list`型别的形参相匹配，即使其他重载版本有着貌似更加匹配的形参表。
 - 使用小括号还是大括号，会造成结果大相径庭的一个例子是：使用两个实参来创建一个`std::vector<int>`对象。
+
 ```c++
 std::vector<int> v1(10, 30); // 10个值为30的元素
 std::vector<int> v2{10, 20}; // 元素：10，20
@@ -127,12 +128,12 @@ std::vector<int> v2{10, 20}; // 元素：10，20
  - `nullptr` 不具备整型型别，虽然也不具备指针型别，但可以把它想成一种任意型别的指针，其实际型别为`std::nullptr_t`，该型别可隐式转换到所有的裸指针型别。
  - 避免在整型和指针型别之间重载
  - `nullptr`在模板内的表现更亮眼
- 
 
 ----------
 
 ### 【条款 9】 优先选用别名声明，而非 typedef
 - 别名声明可以模板化，但`typedef`不行
+
 ```c++
 // 别名声明
 template <typename T>
@@ -154,12 +155,14 @@ MyAllocList<Widget>::type lw;
 
 ### 【条款 10】 优先选用限定作用域的枚举型别，而非不限作用域的枚举型别
 - 通用规则：在一对大括号内声明一个名字，该名字的可见性就被限定在括号括起来的作用域内。但是，C++98风格的枚举型别定义却不遵循该规则。
+
 ```c++
 enum Color {black, white, red}; // black, white, red 的所在作用域和 Color 相同
 
 auto white = false; // 错误， white 已在范围内被声明过。
 ```
 - C++ 11中的限定作用域枚举型别，则不会泄露名字到外部作用域。即，**限定作用域的枚举型别带来的名字空间污染低**。
+
 ```c++
 enum class Color {black, white, red}; //black, white, red 所在作用域被限定在 Color 内
 auto white = false; // 正确
@@ -169,6 +172,7 @@ Color c = Color::white; // 正确
 ```
 - 限定作用域的枚举型别的枚举量是更强型别的（strongly typed），而不限作用域的枚举型别则可以隐式转换到整数型别（甚至进一步转换到浮点型别）。
 - 限定作用域的枚举型别可以直接进行前置声明，而不限作用域的枚举型别需要经过特殊处理——指定底层型别。
+
 ```c++
 enum Color; // wrong
 enum class Color; // true
@@ -187,6 +191,7 @@ C++ 98中为了阻止一些函数被调用，采取的做法是声明其为 `pri
 C++ 11中，可用 “`= delete`”来阻止函数被使用。此种做法有以下几个优点：
 
  - 任何函数都能成为删除函数，但只有成员函数能声明成`private`。
+
 ```c++
 bool isLucky(int number); 
 
@@ -218,6 +223,7 @@ void processPointer<char>(char*) = delete;
  - 基类和派生类中的函数返回值和异常规格必须兼容。
  - 基类和派生类中的函数引用饰词必须完全相同。
     - 成员函数引用饰词是为了实现限制成员函数仅用于左值或右值。
+
 ```c++
 class Widget{
 public:
@@ -247,6 +253,7 @@ C++ 11中添加 `override` 声明不仅可以让编译器帮忙检查上述要�
 ----------
 
 ### 【条款 15】 只要有可能使用 constexpr，就使用它
+
 ```c++
 constexpr
 int pow(int base, int exp) noexcept
@@ -265,6 +272,7 @@ std::array<int, pow(3, numConds)> results;
 ----------
 
 ### 【条款 16】 保证 const 成员函数的线程安全性
+
 ```c++
 class Polynomial {
 public:
@@ -286,6 +294,7 @@ private:
 ```
 上述代码线程不安全，解决上述线程不安全问题有以下两种：
 - 对于单个要求同步的变量或内存区域，使用`std::atomic`就足够了。`std::atomic`的操作比`mutex`的操作开销小。
+
 ```c++
 // 计算调用次数
 class Point{
@@ -301,6 +310,7 @@ private:
 }
 ```
 - 如果有两个或更多个变量或内存区域需要作为一整个单位进行操作时，最好使用 `mutex` 互斥量。
+
 ```c++
 class Widget{
 public: 
@@ -350,6 +360,7 @@ private:
 - 大三律：如果你声明了复制构造函数、复制赋值运算符，或析构函数中的任何一个，你就得同时声明所有这三个。
     - 如果有改写复制操作的需求，往往意味着该类需要执行某种资源管理。
 - 成员函数模板在任何情况下都不会抑制特种成员函数的生成。
+
 ```c++
 // 成员函数模板
 class Widget{
@@ -369,6 +380,7 @@ class Widget{
 - 在默认情况下，`std::unique_ptr`和裸指针有着相同的尺寸，且对于大多数操作，包括提领（dereference，解析），它们二者都是精确地执行了相同的指令。即，`std::unique_ptr`基本能应用于裸指针的使用场景。
 - `std::unique_ptr`是小巧、高速的，具备只移型别（无法复制）的智能指针，对托管资源实施专属所有权语义。
 - 默认情况下，资源析构采用`delete`运算符来实现，但可以指定自定义删除器，有状态的删除器和采用函数指针实现的删除器会增加`std::unique_ptr`型别的对象尺寸，而采用无状态（即无捕获）的lambda表达式则不会浪费任何存储尺寸。
+
 ```c++
 
 class Investment {
@@ -406,6 +418,7 @@ std::unique_ptr<Investment, decltype(delInvmt)> makeInvestment(Ts&&... params){
     - 单对象：`std::unique_ptr<T>`
     - 数组：`std::unique_ptr<T[]>`
 - `std::unique_ptr`可以直接转换成`std::shared_ptr`。
+
 ```c++
 std::shared_ptr<Investment> sp = makeInvestment(arguments);
 ```
@@ -418,6 +431,7 @@ std::shared_ptr<Investment> sp = makeInvestment(arguments);
 - 引用计数的递增和递减必须是原子性操作。
 - 避免使用裸指针型别的变量来创建`std::shared_ptr`指针。如果用同一个裸指针去构造多个`std::shared_ptr`，会创造多重控制块，从而引发多重析构灾难。
 - `std::enable_shared_from_this<T>` 可用于解决涉及`this`指针的多重控制块灾难。
+
 ```c++
 // 追踪被处理过的 Widgets
 std::vector<std::shared_ptr<Widget>> processedWidgets;
@@ -437,6 +451,7 @@ class Widget : public std::enable_shared_from_this<Widget> {
 }
 ```
 - 默认的资源析构通过`delete`运算符进行，但同时也支持定制删除器，删除器的型别对`std::shared_ptr`的型别没有影响。
+
 ```c++
 auto loggingDel = [](Widget* pw){
     makeLogEntry(pw);
@@ -470,6 +485,7 @@ std::shared_ptr<Widget> spw(new Widget, loggingDel); // 析构器型别不是智
 
 ### 【条款 22】 使用 Pimpl 习惯用法时，将特殊成员函数的定义放到实现文件中
 - Pimpl（pointer to implementation）：把某类的数据成员用一个指向某实现类（或结构体）的指针替代，然后把原来在主类中的数据成员放置到实现类中，并通过指针间接访问这些数据成员。
+
 ```c++
 // 裸指针用法
 // “widget.h” 头文件内
@@ -494,6 +510,7 @@ Widget::Widget(): pImpl(new Impl) {}
 Widget::~Widget() { delete pImpl;}
 ```
 - 对于采用`std::unique_ptr`来实现的`pImpl`指针，须在类的头文件中声明特种成员函数，但在实现文件中实现它们。即使默认函数实现有着正确行为，也必须这样做。该规范仅适用于`std::unique_ptr`，而不适用于`std::shared_ptr`。
+
 ```c++
 // std::unique_ptr 用法
 // “widget.h” 头文件内
@@ -541,6 +558,7 @@ Widget::~Widget() = default; // 定义在 Impl 之后，使得析构函数内 Im
 - 万能引用（universal reference，形如`T&&`）：既可以到左值，也可以绑定到右值，甚至`const`和`volatile`对象，即可以绑定到万事万物。万能引用会在以下两种场景下现身：
     - 函数模板的形参具备`T&&`型别，且`T`的型别由推导而来。若型别声明并不精确地具备`type&&`的形式，或者型别推导未发生，则`type&&`就代表右值引用。
     - auto声明，形如`auto&&`
+
 ```c++
 template <typename T>
 void f(T&& param) // param 是一个万能引用
@@ -567,6 +585,7 @@ void f(const T&& param) // param 是一个右值引用
 - 形参为万能引用的函数，是C++中最贪婪的。它们会在具现过程中，和几乎任何实参型别都会产生精确匹配（条款 30 描述了几种例外情况）。
 - 把万能引用作为重载候选型别，几乎总会让该重载版本在始料未及的情况下呗调用到。
 - 完美转发构造函数的问题尤其严重，因为对于非常量的左值型别而言，它们一般都会行成相对于复制构造函数的更佳匹配，并且它们还会劫持派生类中对基类的复制和移动构造函数的调用。
+
 ```c++
 class Person{
 public:
@@ -594,6 +613,7 @@ auto cloneOfP(p2); // 调用得是预想的复制构造函数，因为 const 的
 - 传递 const T& 型别的形参：如条款 26
 - 传值：把传递的形参从引用型别替换成值型别。
 - 标签分派：创造适当的标签对象，根据重载实现函数发起的调用把工作“分派”到正确的重载版本的手法。`std::false_type`和`std::true_type`就是所谓的“标签”，这类形参没有名字，在运行期也不起任何作用。
+
 ```c++
 // 原始版本
 std::multiset<std::string> names;
@@ -625,11 +645,13 @@ void logAndAddImpl(int idx, std::true_type){
     logAndAdd(nameFromIdx(idx));
 }
 ```
+
 - 对接受万能引用的模板施加限制
     - `std::enable_if`  可以强制编译器表现出来的行为如同特定的模板不存在一般。默认情况下，所有的模板都是启用的；但实施了`std::enable_if`的模板，只会在满足了`std::enable_if`指定的条件的前提下才会启用。（运作原理机制，参见`std::enable_if` 和 “SFINAE”）
     - `std::is_same<Person, T>::value`：判定两个型别是否同一。
     - `std::decay<T>::type`：其返回值与`T`的型别相同，但移除了`T`型别带有的所有引用，`const`和`volatile`饰词。该方法同样可用于把数组和函数型别转型成指针型别。
     - `std::is_base_of<T1, T2>::value`：判定一个型别是否是由另一个型别派生而来。注意，所有型别都可以认为是从它自身派生而来。
+
 ```c++
 // c++ 11版本
 class Person{
@@ -665,6 +687,7 @@ private:
     std::string name;
 }
 ```
+
 - 上述方法的比较
     - 前三种技术需要对带调用的函数形参逐一指定型别，而后两种技术则利用了完美转发，无须指定形参型别。
     - 完美转发效率更高，因为它出于和形参声明时的型别严格保持一致的目的，会避免创建临时对象。
@@ -747,6 +770,7 @@ auto func1 = [pw = std::make_unique<Widget>()]{
     - 移动构造一个对象入C++ 11闭包是不可能实现的，但移动构造一个对象入绑定对象则是可能实现的。
     - 欲在C++ 11中模拟移动捕获包括以下步骤：先移动构造一个对象入绑定对象，然后按引用把该移动构造所得的对象传递给 lambda 式。
     - 因为绑定对象的声明周期和闭包相同，所以针对绑定对象中的对象和闭包里的对象可以采用同样手法加以处置。
+
 ```c++
 std::vector<double> data;
 auto func = std::bind([](const std::vector<double>& data){/*操作data*/},
@@ -799,6 +823,7 @@ auto f = [](auto&&... params){
 ----------
 ### 【条款 41】 针对可复制的形参，在移动成本低并且一定会被复制的前提下，考虑将其按值传递
 - 对于可复制的，在移动成本低廉的并且一定会被复制的形参而言，按值传递可能会和按引用传递的具备相近的效率，并可能生成更少量的代码。
+
 ```c++
 // 1. 重载 ： 对于左值是一次复制，对于右值是一次移动
 class Widget{
