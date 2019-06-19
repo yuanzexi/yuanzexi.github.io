@@ -1,3 +1,7 @@
 theme: jekyll-theme-cayman
 title: [yuanzexi 的个人小站]
 description: [记录个人的学习之旅]
+markdown: kramdown
+kramdown:
+    input: GFM
+highlighter: rouge
