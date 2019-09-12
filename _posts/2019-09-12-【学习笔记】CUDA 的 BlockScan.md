@@ -18,7 +18,6 @@ BlockScan 是 Cub 库提供了一种 collective 算法，用于跨 ThreadBlock �
 ## 为什么用 BlockScan
 当需要对 Block 内 Threads 管理的资源进行前置 Reduction 操作时，可以考虑采用。
 
-
 ## 怎么用 BlockScan
 
 - 需求：计算 256 个整数项的前置累加和
@@ -136,6 +135,7 @@ int main( void ) {
 ```
 
 - 输出结果：
+
 ```
 
  ----------- Before BlockScan: -------------
