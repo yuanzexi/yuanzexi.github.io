@@ -3,7 +3,7 @@
 > 版权声明：欢迎各位转载，但是未经作者本人同意，转载文章之后必须在文章页面明显位置给出作者和原文连接，否则保留追究法律责任的权利。 {{site.url}}{{page.url}}
 
 ## 什么是 BlockScan
-BlockScan 是 Cub 库提供了一种 collective 算法，用于跨 ThreadBlock 进行数据扫描访问或者简单的数值计算操作。
+[BlockScan](https://nvlabs.github.io/cub/classcub_1_1_block_scan.html#a6ed3f77795e582df31d3d6d9d950615e) 是 Cub 库提供了一种 collective 算法，用于跨 ThreadBlock 进行数据扫描访问或者简单的数值计算操作。
 
 - Prefix Scan: 给定一组输入数据和一个二元 Reduction 操作，得到一组输出数据，其中第 i 个元素是所有在 i 之前原始输入数据元素的 Reduction 的结果。
 - Prefix Sum: 包含 Prefix Scan 和 加法操作。
